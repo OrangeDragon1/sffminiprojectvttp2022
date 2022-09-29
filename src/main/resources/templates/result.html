@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+    <form method="post" action="/search">
+        <input type="hidden" name="name" data-th-value="${name}">
+        <button type="submit">Search another route</button>
+    </form>
+    <form action="/save" method="post">
+        <h1>
+            <span data-th-text="${origin}"></span> to
+            <span data-th-text="${destination}"></span>
+            <button type="submit">Watch price for this route</button>
+        </h1>
+        <input type="hidden" name="name" data-th-value="${name}">
+        <input type="hidden" name="firstOffer" data-th-value="${firstOffer}">
+        <table>
+            <tr data-th-each="fo:${foList}">
+                <td>
+                    <span data-th-text="${fo.totalPrice}"></span>
+                    <table>
+                        <tr>
+                            <td data-th-each="i:${fo.itineraryList}">
+                                Total flight time: <span data-th-text="${i.totalDuration}"></span>
+                                <table>
+                                    <tr>
+                                        <td data-th-each="s:${i.segmentList}">
+                                            Departure Airport: <span data-th-text="${s.departureAirport}"></span><br>
+                                            Departure Date & Time: <span data-th-text="${s.departureDT}"></span><br>
+                                            Arrival Airport: <span data-th-text="${s.arrivalAirport}"></span><br>
+                                            Arrival Date & Time: <span data-th-text="${s.arrivalDT}"></span><br>
+                                            Flight Number: <span data-th-text="${s.flightNumber}"></span><br>
+                                            Operator: <span data-th-text="${s.operatorCode}"></span><br>
+                                            Aircraft: <span data-th-text="${s.aircraftCode}"></span><br>
+                                            Flight Duration: <span data-th-text="${s.duration}"></span><br>
+                                            Cabin Class: <span data-th-text="${s.cabin}"></span><br>
+                                            Checked Baggage: <span data-th-text="${s.includedCheckedBags}"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+        </script>
+    <script>
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+
+</html>

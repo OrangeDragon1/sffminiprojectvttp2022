@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container-md">
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+            <div class="col-md-7">
+                <p class="display-1 text-center">Start searching here!</p>
+                <form method="GET" action="/result" class="needs-validation" novalidate>
+
+                    <input type="hidden" name="name" data-th-value="${name}">
+                    <div class="row">
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text" id="">Origin</span>
+                            <input type="text" class="form-control" placeholder="From..." name="originLocationCode"
+                                required>
+                            <div class="invalid-feedback">
+                                Please enter an origin airport
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text" id="">Destination</span>
+                            <input type="text" class="form-control" placeholder="To..." name="destinationLocationCode"
+                                required>
+                            <div class="invalid-feedback">
+                                Please enter a departure airport
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text" id="">Departure Date</span>
+                            <input type="text" class="form-control" placeholder="Select date" name="departureDate"
+                                required>
+                            <div class="invalid-feedback">
+                                Please enter a departure date
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 col">
+                            <span class="input-group-text" id="">Return Date</span>
+                            <input type="text" class="form-control" placeholder="Select date" name="returnDate">
+                            <div class="valid-feedback">
+                                Leave empty for one-way flight
+                            </div>
+                        </div>
+                    </div>
+                    <select class="form-select input-group mb-3" name="travelClass" required>
+                        <option value="">Please select cabin class...</option>
+                        <option value="ECONOMY">Economy</option>
+                        <option value="PREMIUM_ECONOMY">Premium Economy</option>
+                        <option value="BUSINESS">Business</option>
+                        <option value="FIRST">First</option>
+                    </select>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="" name="nonStop"> Direct
+                    </div>
+                    <div class="d-grid mx-auto">
+                        <button type="submit" class="btn btn-primary mt-1">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Origin:
+                    <input type="text" name="originLocationCode">
+                    Destination:
+                    <input type="text" name="destinationLocationCode">
+                    Departure Date:
+                    <input type="text" name="departureDate">
+                    Return Date:
+                    <input type="text" name="returnDate">
+                    Cabin Class:
+                    <input type="text" name="travelClass">
+                    <button type="submit">Submit</button>
+                    <input type="hidden" name="name" data-th-value="${name}"> -->
+
+    <!-- <div class="input-group mb-3">
+        <span class="input-group-text" id="">Origin</span>
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+    </div> -->
+
+    <!-- <div></div>
+    <div class="container-md my-6">
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+            <div class="col-md-6">
+                <p class="display-1 text-center">Route Price Tracker</p>
+                <form method="POST" action="/search" class="needs-validation" novalidate>
+                    <input class="form-control" id="name" type="text" name="name"
+                        placeholder="Please identify yourself..." required>
+                    <div class="invalid-feedback">
+                        Please enter your name.
+                    </div>
+                    <div class="d-grid mx-auto">
+                        <button type="submit" class="btn btn-primary mt-1">Begin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div></div> -->
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+        </script>
+    <script>
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+
+</html>
