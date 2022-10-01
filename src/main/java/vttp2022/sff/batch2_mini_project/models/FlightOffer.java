@@ -16,6 +16,14 @@ public class FlightOffer {
     private String basePrice;
     private Double surcharges;
     private String currency;
+    private String count;
+    private static Integer counter = 1;
+    private String origin;
+    private String destination;
+    private Boolean oneWay;
+    private String departureDate;
+    private String returnDate;
+    private String travelClass;
 
     public List<Itinerary> getItineraryList() { return itineraryList; }
     public void setItineraryList(List<Itinerary> itineraryList) { this.itineraryList = itineraryList; }
@@ -27,6 +35,20 @@ public class FlightOffer {
     public void setSurcharges(Double surcharges) { this.surcharges = surcharges; }
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
+    public String getCount() { return count; }
+    public void setCount(String count) { this.count = count; }
+    public String getOrigin() { return origin; }
+    public void setOrigin(String origin) { this.origin = origin; }
+    public String getDestination() { return destination; }
+    public void setDestination(String destination) { this.destination = destination; }
+    public Boolean getOneWay() { return oneWay; }
+    public void setOneWay(Boolean oneWay) { this.oneWay = oneWay; }
+    public String getDepartureDate() { return departureDate; }
+    public void setDepartureDate(String departureDate) { this.departureDate = departureDate; }
+    public String getReturnDate() { return returnDate; }
+    public void setReturnDate(String returnDate) { this.returnDate = returnDate; }
+    public String getTravelClass() { return travelClass; }
+    public void setTravelClass(String travelClass) { this.travelClass = travelClass; }
 
     public static FlightOffer createFlightOffer(JsonObject jsonObject) {
 
@@ -35,6 +57,8 @@ public class FlightOffer {
         i.setBasePrice(jsonObject.getJsonObject("price").getString("base"));
         i.setCurrency(jsonObject.getJsonObject("price").getString("currency"));
         i.setSurcharges(Double.parseDouble(i.getTotalPrice()) - Double.parseDouble(i.getBasePrice()));
+        i.setCount("number" + counter);
+        counter++;
         List<JsonObject> joList = new LinkedList<>();
         List<Itinerary> iList = new LinkedList<>();
         JsonArray jsonArray = jsonObject.getJsonArray("itineraries");
@@ -43,6 +67,20 @@ public class FlightOffer {
         i.setItineraryList(iList);
         JsonArray fareDetailsBySegmentsArray = jsonObject.getJsonArray("travelerPricings").getJsonObject(0).getJsonArray("fareDetailsBySegment");
         setCabinandBaggage(fareDetailsBySegmentsArray, i);
+        i.setOrigin(i.getItineraryList().get(0).getSegmentList().get(0).getDepartureAirport());
+        i.setDestination(i.getItineraryList().get(0).getSegmentList()
+                .get(i.getItineraryList().get(0).getSegmentList().size()-1).getArrivalAirport());
+        i.setOneWay(false);
+        if (i.getItineraryList().size() <= 1) {
+            i.setOneWay(true);
+        }
+        i.setDepartureDate(i.getItineraryList().get(0).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+        if (i.oneWay == true) {
+            i.setReturnDate(null);
+        } else {
+            i.setReturnDate(i.getItineraryList().get(i.getItineraryList().size()-1).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+        }
+        i.setTravelClass(i.getItineraryList().get(0).getSegmentList().get(0).getCabin());
         return i;
     }
 
@@ -132,4 +170,5 @@ public class FlightOffer {
         return "FlightOffer [basePrice=" + basePrice + ", itineraryList=" + itineraryList + ", surcharges=" + surcharges
                 + ", totalPrice=" + totalPrice + "]";
     }
+    
 }

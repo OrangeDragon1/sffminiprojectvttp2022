@@ -17,8 +17,13 @@ public class SearchController {
             @RequestBody MultiValueMap<String, String> form, 
             Model model) {
         
+        String dateNow = java.time.LocalDate.now().toString();
+        String dateLater = java.time.LocalDate.now().plusYears(1).toString();
         String name = form.getFirst("name");
-        model.addAttribute("name", name);
+
+        model.addAttribute("name", name.toUpperCase());
+        model.addAttribute("dateNow", dateNow);
+        model.addAttribute("dateLater", dateLater);
 
         return "search";
     }

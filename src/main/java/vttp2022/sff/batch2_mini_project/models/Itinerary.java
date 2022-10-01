@@ -12,11 +12,14 @@ public class Itinerary {
 
     private List<Segment> segmentList;
     private String totalDuration;
+    private Boolean direct;
 
     public List<Segment> getSegmentList() { return segmentList; }
     public void setSegmentList(List<Segment> segmentList) { this.segmentList = segmentList; }
     public String getTotalDuration() { return totalDuration; }
     public void setTotalDuration(String totalDuration) { this.totalDuration = totalDuration; }
+    public Boolean getDirect() { return direct; }
+    public void setDirect(Boolean direct) { this.direct = direct; }
 
     public static Itinerary createItinerary(JsonObject jsonObject) { 
         Itinerary f = new Itinerary();
@@ -27,6 +30,10 @@ public class Itinerary {
         jsonArray.forEach(jo -> joList.add((JsonObject)jo));
         joList.forEach(j -> fList.add(Segment.createSegment(j)));
         f.setSegmentList(fList);
+        f.setDirect(false);
+        if (f.getSegmentList().size() <= 1) {
+            f.setDirect(true);
+        }
         return f;
     }
 

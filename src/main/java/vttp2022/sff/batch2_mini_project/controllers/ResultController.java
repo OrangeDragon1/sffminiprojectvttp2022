@@ -34,6 +34,8 @@ public class ResultController {
             nonStopBoolean = false;
         }
 
+        System.out.println(form.getFirst("returnDate"));
+        
         foList = foSvc.getFlightOffers(form.getFirst("originLocationCode"),
                 form.getFirst("destinationLocationCode"), 
                 form.getFirst("departureDate"), 
@@ -42,8 +44,11 @@ public class ResultController {
                 "1", 
                 "SGD", 
                 nonStopBoolean);
+        
+        System.out.println(foList.toString());
 
         FlightOffer firstOffer = foList.get(0);
+        System.out.println(foList.get(0).toString());
 
         model.addAttribute("origin", form.getFirst("originLocationCode"));
         model.addAttribute("destination", form.getFirst("destinationLocationCode"));

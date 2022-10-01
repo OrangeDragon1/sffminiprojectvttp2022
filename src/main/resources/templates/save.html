@@ -12,12 +12,12 @@
     <h2>data is saved to redis</h2>
     <h1>making sure <span data-th-text="${name}"></span> is here</h1>
 
-    <form method="post" action="/search">
+    <form method="POST" action="/search">
         <input type="hidden" name="name" data-th-value="${name}">
         <button type="submit">Search another route</button>
     </form>
 
-    <form action="/foCart" method="post">
+    <form method="POST" action="/trackedRoutes">
         <input type="hidden" name="name" data-th-value="${name}">
         <button type="submit">Saved routes</button>
     </form>

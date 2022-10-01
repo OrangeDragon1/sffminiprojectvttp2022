@@ -11,72 +11,91 @@
 </head>
 
 <body>
-    <form method="post" action="/search">
-        <input type="hidden" name="name" data-th-value="${name}">
-        <button type="submit">Search another route</button>
-    </form>
-    <form action="/save" method="post">
-        <h1>
-            <span data-th-text="${origin}"></span> to
-            <span data-th-text="${destination}"></span>
-            <button type="submit">Watch price for this route</button>
-        </h1>
-        <input type="hidden" name="name" data-th-value="${name}">
-        <input type="hidden" name="firstOffer" data-th-value="${firstOffer}">
-        <table>
-            <tr data-th-each="fo:${foList}">
-                <td>
-                    <span data-th-text="${fo.totalPrice}"></span>
-                    <table>
-                        <tr>
-                            <td data-th-each="i:${fo.itineraryList}">
-                                Total flight time: <span data-th-text="${i.totalDuration}"></span>
-                                <table>
-                                    <tr>
-                                        <td data-th-each="s:${i.segmentList}">
-                                            Departure Airport: <span data-th-text="${s.departureAirport}"></span><br>
-                                            Departure Date & Time: <span data-th-text="${s.departureDT}"></span><br>
-                                            Arrival Airport: <span data-th-text="${s.arrivalAirport}"></span><br>
-                                            Arrival Date & Time: <span data-th-text="${s.arrivalDT}"></span><br>
-                                            Flight Number: <span data-th-text="${s.flightNumber}"></span><br>
-                                            Operator: <span data-th-text="${s.operatorCode}"></span><br>
-                                            Aircraft: <span data-th-text="${s.aircraftCode}"></span><br>
-                                            Flight Duration: <span data-th-text="${s.duration}"></span><br>
-                                            Cabin Class: <span data-th-text="${s.cabin}"></span><br>
-                                            Checked Baggage: <span data-th-text="${s.includedCheckedBags}"></span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </form>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-md-center align-items-center mb-1">
+            <h1 class="display-2">
+                Flights to <span data-th-text="${destination}"></span>
+            </h1>
+        </div>
+        <div class="d-flex justify-content-md-center align-items-center mb-4">
+            <form method="POST" action="/search">
+                <input type="hidden" name="name" data-th-value="${name}">
+                <button type="submit" class="btn btn-dark">Search another route</button>
+            </form>
+            <span class="p-1"></span>
+            <form method="POST" action="/save">
+                <input type="hidden" name="name" data-th-value="${name}">
+                <input type="hidden" name="firstOffer" data-th-value="${firstOffer}">
+                <button type="submit" class="btn btn-dark">Watch price for this route</button>
+            </form>
+        </div>
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div th:each="fo:${foList}">
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed d-block text-center" type="button"
+                            data-bs-toggle="collapse" th:attr="data-bs-target='#accordion_'+${fo.count}"
+                            aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            <div class="row">
+                                <div class="col-sm-2 align-self-center">
+                                    <div class="d-flex justify-content-md-center align-items-center">
+                                        <span th:text="${fo.currency} + ' ' + ${fo.totalPrice}"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col" th:each="i:${fo.itineraryList}">
+                                            <div class="row" th:each="s:${i.segmentList}">
+                                                <div class="col">
+                                                    <img width="50px" th:src="@{images/logo/{code}.png(code=${s.operatorCode})}"
+                                                        style="margin-right: 20px;">
+                                                    <span th:text="${s.departureAirport}"></span>
+                                                    <img width="200px" th:src="@{images/todestination.png}">
+                                                    <span th:text="${s.arrivalAirport}"></span>
+                                                    <span class="p-4"><span class="badge bg-secondary">DIRECT</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </h2>
+                    <div th:id="'accordion_'+${fo.count}" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col" data-th-each="i:${fo.itineraryList}">
+                                        Total flight time: <span data-th-text="${i.totalDuration}"></span>
+                                        <div class="row">
+                                            <div class="col p-2" data-th-each="s:${i.segmentList}">
+                                                Departure Airport: <span
+                                                    data-th-text="${s.departureAirport}"></span><br>
+                                                Departure Date & Time: <span data-th-text="${s.departureDT}"></span><br>
+                                                Arrival Airport: <span data-th-text="${s.arrivalAirport}"></span><br>
+                                                Arrival Date & Time: <span data-th-text="${s.arrivalDT}"></span><br>
+                                                Flight Number: <span data-th-text="${s.flightNumber}"></span><br>
+                                                Operator: <span data-th-text="${s.operatorCode}"></span><br>
+                                                Aircraft: <span data-th-text="${s.aircraftCode}"></span><br>
+                                                Flight Duration: <span data-th-text="${s.duration}"></span><br>
+                                                Cabin Class: <span data-th-text="${s.cabin}"></span><br>
+                                                Checked Baggage: <span data-th-text="${s.includedCheckedBags}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
         </script>
-    <script>
-        (() => {
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        })()
-    </script>
 </body>
 
 </html>

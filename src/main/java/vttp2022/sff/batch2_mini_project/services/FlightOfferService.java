@@ -48,25 +48,25 @@ public class FlightOfferService {
         // nonStop=true
 
         try {
-            if (returnDate == null) {
+            if (returnDate == null || returnDate.length() <= 0 || returnDate.isEmpty()) {
                 url = UriComponentsBuilder.fromUriString(FLIGHT_OFFERS_URL)
-                    .queryParam("originLocationCode", originLocationCode)
-                    .queryParam("destinationLocationCode", destinationLocationCode)
+                    .queryParam("originLocationCode", originLocationCode.toUpperCase())
+                    .queryParam("destinationLocationCode", destinationLocationCode.toUpperCase())
                     .queryParam("departureDate", departureDate)
-                    .queryParam("travelClass", travelClass)
+                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("adults", adults)
-                    .queryParam("currencyCode", currencyCode)
+                    .queryParam("currencyCode", currencyCode.toUpperCase())
                     .queryParam("nonStop", nonStop)
                     .toUriString();
             } else {
                 url = UriComponentsBuilder.fromUriString(FLIGHT_OFFERS_URL)
-                    .queryParam("originLocationCode", originLocationCode)
-                    .queryParam("destinationLocationCode", destinationLocationCode)
+                    .queryParam("originLocationCode", originLocationCode.toUpperCase())
+                    .queryParam("destinationLocationCode", destinationLocationCode.toUpperCase())
                     .queryParam("departureDate", departureDate)
                     .queryParam("returnDate", returnDate)
-                    .queryParam("travelClass", travelClass)
+                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("adults", adults)
-                    .queryParam("currencyCode", currencyCode)
+                    .queryParam("currencyCode", currencyCode.toUpperCase())
                     .queryParam("nonStop", nonStop)
                     .toUriString();
             }
