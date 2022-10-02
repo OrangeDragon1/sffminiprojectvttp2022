@@ -53,10 +53,10 @@ public class FlightOfferService {
                     .queryParam("originLocationCode", originLocationCode.toUpperCase())
                     .queryParam("destinationLocationCode", destinationLocationCode.toUpperCase())
                     .queryParam("departureDate", departureDate)
-                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("adults", adults)
-                    .queryParam("currencyCode", currencyCode.toUpperCase())
+                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("nonStop", nonStop)
+                    .queryParam("currencyCode", currencyCode.toUpperCase())
                     .toUriString();
             } else {
                 url = UriComponentsBuilder.fromUriString(FLIGHT_OFFERS_URL)
@@ -64,12 +64,13 @@ public class FlightOfferService {
                     .queryParam("destinationLocationCode", destinationLocationCode.toUpperCase())
                     .queryParam("departureDate", departureDate)
                     .queryParam("returnDate", returnDate)
-                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("adults", adults)
-                    .queryParam("currencyCode", currencyCode.toUpperCase())
+                    .queryParam("travelClass", travelClass.toUpperCase())
                     .queryParam("nonStop", nonStop)
+                    .queryParam("currencyCode", currencyCode.toUpperCase())
                     .toUriString();
             }
+            System.out.println(url);
             
             RequestEntity<Void> requestEntity = RequestEntity
                     .get(url)

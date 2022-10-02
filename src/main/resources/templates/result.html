@@ -40,20 +40,32 @@
                             <div class="row">
                                 <div class="col-sm-2 align-self-center">
                                     <div class="d-flex justify-content-md-center align-items-center">
-                                        <span th:text="${fo.currency} + ' ' + ${fo.totalPrice}"></span>
+                                        <h3>
+                                            <span class="badge text-bg-dark">
+                                                <span th:text="${fo.currency} + ' ' + ${fo.totalPrice}"></span>
+                                            </span>
+                                        </h3>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="row">
                                         <div class="col" th:each="i:${fo.itineraryList}">
                                             <div class="row" th:each="s:${i.segmentList}">
-                                                <div class="col">
-                                                    <img width="50px" th:src="@{images/logo/{code}.png(code=${s.operatorCode})}"
+                                                <div class="col p-2">
+                                                    <img width="50px"
+                                                        th:src="@{images/logo/{code}.png(code=${s.operatorCode})}"
                                                         style="margin-right: 20px;">
                                                     <span th:text="${s.departureAirport}"></span>
                                                     <img width="200px" th:src="@{images/todestination.png}">
                                                     <span th:text="${s.arrivalAirport}"></span>
-                                                    <span class="p-4"><span class="badge bg-secondary">DIRECT</span></span>
+                                                    <span class="p-4">
+                                                        <span th:if="${i.getDirect}">
+                                                            <span class="badge bg-secondary">DIRECT</span>
+                                                        </span>
+                                                        <span th:unless="${i.getDirect}">
+                                                            <span class="badge text-bg-light">LAYOVER</span>
+                                                        </span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

@@ -32,26 +32,73 @@
 
         <div class="container">
             <div class="row">
-                <div class="col p-3">
-                    <div class="card" style="width: 400px; height: 200px;">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Stop tracking this route</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col p-3" th:each="fo:${foList}">
-                    <div class="card" style="width: 400px; height: 200px;">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                
-                            </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Some placeholder</h6>
-                            <p class="card-text">Help plz</p>
-                            <a href="#" class="btn btn-primary">Stop tracking this route</a>
+                <div class="col-lg-6 p-4" th:each="fo:${foList}">
+                    <div class="card" style="width: 600px; height: 300px;">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card-body">
+                                    <h1 class="card-title">
+                                        <span th:text="${fo.origin}"></span>
+                                        <img width="120px" th:src="@{images/todestination.png}">
+                                        <span th:text="${fo.destination}"></span>
+                                        </h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <span th:if="${fo.direct}">
+                                                <span class="p-1"><span class="badge bg-secondary">DIRECT</span></span>
+                                            </span>
+                                            <span class="p-1">
+                                                <span class="badge bg-secondary">
+                                                    <span th:text="${fo.travelClass}"></span>
+                                                </span>
+                                            </span>
+                                            <span th:if="${fo.oneWay}">
+                                                <span class="p-1"><span class="badge bg-secondary">ONE WAY</span></span>
+                                            </span>
+                                            <span th:unless="${fo.oneWay}">
+                                                <span class="p-1"><span class="badge bg-secondary">RETURN</span></span>
+                                            </span>
+                                        </h6>
+                                        <table class="table table-hover table-borderless" >
+                                            <tr>
+                                                <td>
+                                                    <strong>Departure</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>
+                                                        <span th:text="${fo.departureDate}"></span>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Return</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>
+                                                        <span th:text="${fo.returnDate} ?: '-'"></span>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p>{AI Reccomend if price is good}</p>
+                                        <button type="button" class="btn btn-danger">                                
+                                            <strong>DELETE</strong>
+                                        </button>
+                                        <button type="button" class="btn btn-success">                                
+                                            <strong>REFRESH</strong>
+                                        </button>
+                                        
+                                </div>
+                            </div>
+                            <div class="col-auto align-self-center">
+                                <div class="card-body">
+                                    <h1 class="card-title">
+                                        <span class="badge text-bg-dark">
+                                            <span th:text="${fo.currency} + ' ' + ${fo.totalPrice}"></span>
+                                        </span>
+                                    </h1>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

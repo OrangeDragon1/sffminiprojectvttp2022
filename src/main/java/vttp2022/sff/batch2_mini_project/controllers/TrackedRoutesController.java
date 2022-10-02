@@ -31,6 +31,7 @@ public class TrackedRoutesController {
         Optional<FlightOfferCart> opt = foRepo.getFOCart(upperName);
 
         FlightOfferCart foCart = opt.get();
+        System.out.println(foCart.getFOList().get(0).getMeta());
         
         model.addAttribute("name", name.toUpperCase());
         model.addAttribute("foList", foCart.getFOList());

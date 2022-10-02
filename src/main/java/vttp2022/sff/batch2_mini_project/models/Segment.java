@@ -42,16 +42,20 @@ public class Segment {
     public void setIncludedCheckedBags(String includedCheckedBags) { this.includedCheckedBags = includedCheckedBags; }
 
     public static Segment createSegment(JsonObject jo) {
-        Segment f = new Segment();
-        f.setId(jo.getString("id")); 
-        f.setDepartureAirport(jo.getJsonObject("departure").getString("iataCode"));
-        f.setDepartureDT(jo.getJsonObject("departure").getString("at"));
-        f.setArrivalAirport(jo.getJsonObject("arrival").getString("iataCode"));
-        f.setArrivalDT(jo.getJsonObject("arrival").getString("at"));
-        f.setFlightNumber(jo.getString("carrierCode") + " " + jo.getString("number"));
-        f.setOperatorCode(jo.getJsonObject("operating").getString("carrierCode"));
-        f.setAircraftCode(jo.getJsonObject("aircraft").getString("code"));
-        f.setDuration(jo.getString("duration"));
+            Segment f = new Segment();
+        try {
+                f.setId(jo.getString("id")); 
+                f.setDepartureAirport(jo.getJsonObject("departure").getString("iataCode"));
+                f.setDepartureDT(jo.getJsonObject("departure").getString("at"));
+                f.setArrivalAirport(jo.getJsonObject("arrival").getString("iataCode"));
+                f.setArrivalDT(jo.getJsonObject("arrival").getString("at"));
+                f.setFlightNumber(jo.getString("carrierCode") + " " + jo.getString("number"));
+                f.setOperatorCode(jo.getJsonObject("operating").getString("carrierCode"));
+                f.setAircraftCode(jo.getJsonObject("aircraft").getString("code"));
+                f.setDuration(jo.getString("duration"));
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
         return f;
     }
 

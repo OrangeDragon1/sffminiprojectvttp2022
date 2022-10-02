@@ -24,6 +24,8 @@ public class FlightOffer {
     private String departureDate;
     private String returnDate;
     private String travelClass;
+    private String meta;
+    private Boolean direct;
 
     public List<Itinerary> getItineraryList() { return itineraryList; }
     public void setItineraryList(List<Itinerary> itineraryList) { this.itineraryList = itineraryList; }
@@ -49,6 +51,10 @@ public class FlightOffer {
     public void setReturnDate(String returnDate) { this.returnDate = returnDate; }
     public String getTravelClass() { return travelClass; }
     public void setTravelClass(String travelClass) { this.travelClass = travelClass; }
+    public String getMeta() { return meta; }
+    public void setMeta(String meta) { this.meta = meta; }
+    public Boolean getDirect() { return direct; }
+    public void setDirect(Boolean direct) { this.direct = direct; }
 
     public static FlightOffer createFlightOffer(JsonObject jsonObject) {
 
@@ -81,6 +87,20 @@ public class FlightOffer {
             i.setReturnDate(i.getItineraryList().get(i.getItineraryList().size()-1).getSegmentList().get(0).getDepartureDT().substring(0, 10));
         }
         i.setTravelClass(i.getItineraryList().get(0).getSegmentList().get(0).getCabin());
+        Boolean b = true;
+        for (Itinerary itinerary : i.getItineraryList()) {
+            b = b && itinerary.getDirect();
+        }
+        if (b == true) {
+            i.setDirect(true);
+        } else {
+            i.setDirect(false);
+        }
+        if (i.oneWay == true) {
+            i.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", i.getOrigin(), i.getDestination(), i.getDepartureDate(), i.getTravelClass(), i.getDirect(),i.getCurrency()));
+        } else {
+            i.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&returnDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", i.getOrigin(), i.getDestination(), i.getDepartureDate(), i.getReturnDate(),i.getTravelClass(), i.getDirect(),i.getCurrency()));
+        }
         return i;
     }
 
