@@ -13,6 +13,8 @@ public class Itinerary {
     private List<Segment> segmentList;
     private String totalDuration;
     private Boolean direct;
+    private Integer stops;
+    private String totalFlightTime;
 
     public List<Segment> getSegmentList() { return segmentList; }
     public void setSegmentList(List<Segment> segmentList) { this.segmentList = segmentList; }
@@ -20,6 +22,10 @@ public class Itinerary {
     public void setTotalDuration(String totalDuration) { this.totalDuration = totalDuration; }
     public Boolean getDirect() { return direct; }
     public void setDirect(Boolean direct) { this.direct = direct; }
+    public Integer getStops() { return stops; }
+    public void setStops(Integer stops) { this.stops = stops; }
+    public String getTotalFlightTime() { return totalFlightTime; }
+    public void setTotalFlightTime(String totalFlightTime) { this.totalFlightTime = totalFlightTime; }    
 
     public static Itinerary createItinerary(JsonObject jsonObject) { 
         Itinerary f = new Itinerary();
@@ -34,6 +40,8 @@ public class Itinerary {
         if (f.getSegmentList().size() <= 1) {
             f.setDirect(true);
         }
+        f.setStops(f.getSegmentList().size() - 1);
+        f.setTotalFlightTime(f.getTotalDuration().substring(2));
         return f;
     }
 
@@ -56,5 +64,5 @@ public class Itinerary {
     public String toString() {
         return "Itinerary [SegmentList=" + segmentList + ", totalDuration=" + totalDuration + "]";
     }
-    
+
 }

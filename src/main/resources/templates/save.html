@@ -5,22 +5,91 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <title>
+        Result
+    </title>
 </head>
 
 <body>
-    <h2>data is saved to redis</h2>
-    <h1>making sure <span data-th-text="${name}"></span> is here</h1>
+    <nav class="navbar fixed-top navbar-expand-lg bg-light">
+        <div class="container mt-1">
+            <a class="navbar-brand" href="/">Airfare Watcher</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto"></ul>
+                <span class="nav-item dropdown">
+                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown">
+                        Logged in as: <strong><span th:text="${name}"></span></strong>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span th:text="${numberOfFO}"></span>
+                            <span class="visually-hidden">IN CART</span>
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" style="--bs-dropdown-link-active-bg: #212529;">
+                        <li><a class="dropdown-item">
+                                <form method="POST" action="/search" id="search">
+                                    <input type="hidden" name="name" data-th-value="${name}">
+                                    <button class="dropdown-item" type="submit"
+                                        style="padding: 0!important;">Search</button>
+                                </form>
+                            </a></li>
+                        <li><a class="dropdown-item">
+                                <form method="POST" action="/trackedRoutes">
+                                    <input type="hidden" name="name" data-th-value="${name}">
+                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Tracked
+                                        Flights</button>
+                                </form>
+                            </a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item">
+                                <form method="POST" action="/deleteUser">
+                                    <input type="hidden" name="name" data-th-value="${name}">
+                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Delete
+                                        User</button>
+                                </form>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="/">Logout</a></li>
+                    </ul>
+                </span>
+            </div>
+        </div>
+    </nav>
 
-    <form method="POST" action="/search">
-        <input type="hidden" name="name" data-th-value="${name}">
-        <button type="submit">Search another route</button>
-    </form>
+    <span th:if="${saved}">
+        <div class="container-sm">
+            <div class="d-flex justify-content-md-center align-items-center vh-100">
+                <p class="display-1 text-center">
+                    You are now tracking this flight. 
+                </p>
+            </div>
+        </div>
+    </span>
+    <span th:unless="${saved}">
+        <div class="container-sm">
+            <div class="d-flex justify-content-md-center align-items-center vh-100">
+                <p class="display-1 text-center">
+                    Flight is already being tracked. 
+                </p>
+            </div>
+        </div>
+    </span>
 
-    <form method="POST" action="/trackedRoutes">
-        <input type="hidden" name="name" data-th-value="${name}">
-        <button type="submit">Saved routes</button>
-    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

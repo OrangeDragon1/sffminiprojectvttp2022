@@ -17,6 +17,11 @@ public class Segment {
     private String duration;
     private String cabin;
     private String includedCheckedBags;
+    private String departureDate;
+    private String departureTime;
+    private String arrivalDate;
+    private String arrivalTime;
+    private String flightTime;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -40,9 +45,19 @@ public class Segment {
     public void setCabin(String cabin) { this.cabin = cabin; }
     public String getIncludedCheckedBags() { return includedCheckedBags; }
     public void setIncludedCheckedBags(String includedCheckedBags) { this.includedCheckedBags = includedCheckedBags; }
+    public String getDepartureDate() { return departureDate; }
+    public void setDepartureDate(String departureDate) { this.departureDate = departureDate; }
+    public String getDepartureTime() { return departureTime; }
+    public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
+    public String getArrivalDate() { return arrivalDate; }
+    public void setArrivalDate(String arrivalDate) { this.arrivalDate = arrivalDate; }
+    public String getArrivalTime() { return arrivalTime; }
+    public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
+    public String getFlightTime() { return flightTime; }
+    public void setFlightTime(String flightTime) { this.flightTime = flightTime; }
 
     public static Segment createSegment(JsonObject jo) {
-            Segment f = new Segment();
+        Segment f = new Segment();
         try {
                 f.setId(jo.getString("id")); 
                 f.setDepartureAirport(jo.getJsonObject("departure").getString("iataCode"));
@@ -53,6 +68,11 @@ public class Segment {
                 f.setOperatorCode(jo.getJsonObject("operating").getString("carrierCode"));
                 f.setAircraftCode(jo.getJsonObject("aircraft").getString("code"));
                 f.setDuration(jo.getString("duration"));
+                f.setDepartureDate(f.getDepartureDT().substring(0, 10));
+                f.setDepartureTime(f.getDepartureDT().substring(11));
+                f.setArrivalDate(f.getArrivalDT().substring(0, 10));
+                f.setArrivalTime(f.getArrivalDT().substring(11));
+                f.setFlightTime(f.getDuration().substring(2));
         } catch (Exception e) {
                 e.printStackTrace();
         }

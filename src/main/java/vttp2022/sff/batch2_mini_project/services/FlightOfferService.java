@@ -40,12 +40,10 @@ public class FlightOfferService {
     private static final String FLIGHT_OFFERS_URL = "https://test.api.amadeus.com/v2/shopping/flight-offers";
 
     public List<FlightOffer> getFlightOffers(String originLocationCode, String destinationLocationCode, String departureDate, 
-            String returnDate, String travelClass, String adults, String currencyCode, Boolean nonStop) {
+            String returnDate, String adults, String travelClass, Boolean nonStop, String currencyCode) {
 
         String payload; 
         String url;
-
-        // nonStop=true
 
         try {
             if (returnDate == null || returnDate.length() <= 0 || returnDate.isEmpty()) {
@@ -70,7 +68,37 @@ public class FlightOfferService {
                     .queryParam("currencyCode", currencyCode.toUpperCase())
                     .toUriString();
             }
-            System.out.println(url);
+            
+            RequestEntity<Void> requestEntity = RequestEntity
+                    .get(url)
+                    .header("Authorization", getAccessToken())
+                    .build();
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> respEntity = restTemplate.exchange(requestEntity, String.class);
+            payload = respEntity.getBody();
+
+        } catch (Exception e) {
+            System.err.printf("Error: %s\n", e.getMessage());
+            return Collections.emptyList();
+        }
+
+        List<JsonObject> joList = getAvailableFlightOffer(payload);
+        List<FlightOffer> fList = new LinkedList<>();
+        for (JsonObject jo : joList) {
+            fList.add(FlightOffer.createFlightOffer(jo));
+        }
+        return fList;
+    }
+    
+    // get flight offers using meta data
+    public List<FlightOffer> getFlightOffers(String meta) {
+
+        String payload; 
+        String url;
+
+        try {
+            url = UriComponentsBuilder.fromUriString(meta).toUriString();
             
             RequestEntity<Void> requestEntity = RequestEntity
                     .get(url)
@@ -119,8 +147,6 @@ public class FlightOfferService {
         JsonReader jsonReader = Json.createReader(stringReader);
         JsonObject payloadObject = jsonReader.readObject();
         JsonArray dataArray = (JsonArray) payloadObject.get("data");
-
-        // System.out.println(payloadObject.get("data").getValueType());
         List<JsonObject> joList = new LinkedList<>();
         dataArray.forEach(jo -> joList.add((JsonObject) jo));
 

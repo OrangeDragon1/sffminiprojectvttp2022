@@ -32,10 +32,8 @@ public class FlightOfferRepository {
 
         if (!redisTemplate.hasKey(foCart.getName())) {
             listOps.leftPush(foCart.getName(), toJson(foCart.getFOList()).toString());
-            System.out.println("no existing user");
             return;
         }
-        System.out.println("deleting user and relpacing with new cart");
         redisTemplate.delete(foCart.getName());
         listOps.leftPush(foCart.getName(), toJson(foCart.getFOList()).toString());
     }
@@ -60,6 +58,16 @@ public class FlightOfferRepository {
         }
         FlightOfferCart foCart = FlightOfferCart.createCart(name, fList);
         return Optional.of(foCart);
+    }
+
+    public Boolean deleteKey(String name) {
+
+        if (!redisTemplate.hasKey(name)) {
+			return false;
+        }
+
+        redisTemplate.delete(name);
+        return true;
     }
 
     private List<JsonObject> getAvailableFlightOffer(String payload) {

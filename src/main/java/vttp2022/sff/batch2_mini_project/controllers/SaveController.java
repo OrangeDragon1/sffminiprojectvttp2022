@@ -2,6 +2,7 @@ package vttp2022.sff.batch2_mini_project.controllers;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +33,51 @@ public class SaveController {
             Model model) {
     
     String name = form.getFirst("name");
+    String upperName = name.toUpperCase();
     String firstOffer = form.getFirst("firstOffer");
     FlightOfferCart foCart;
 
-    Optional<FlightOfferCart> opt = foRepo.getFOCart(name);
+    Optional<FlightOfferCart> opt = foRepo.getFOCart(upperName);
     if(!opt.isEmpty()) {
         foCart = opt.get();    
     } else {
-        foCart = FlightOfferCart.createCart(name);
+        foCart = FlightOfferCart.createCart(upperName);
     }
 
     // create flightoffer object and add to cart
     Reader stringReader = new StringReader(firstOffer);
     JsonReader jsonReader = Json.createReader(stringReader);
     JsonObject firstOfferObject = jsonReader.readObject();
-    foCart.addFlightOffer(FlightOffer.createFlightOffer(firstOfferObject));
+    FlightOffer flightOffer = FlightOffer.createFlightOffer(firstOfferObject);
+    String meta = flightOffer.getMeta();
+    Boolean exist = false;
+    Integer numberOfFO = foCart.getFOList().size();
 
-    System.out.println(firstOfferObject.toString());
+
+    // prevent duplication
+    List<FlightOffer> foList = foCart.getFOList();
+    for (int i = 0; i < foList.size(); i++) {
+        if (foList.get(i).getMeta().equalsIgnoreCase(meta)) {
+            exist = true;
+        }
+    }
+
+    if (exist) {
+
+        model.addAttribute("saved", false);
+        model.addAttribute("name", upperName);
+        model.addAttribute("numberOfFO", numberOfFO);
+
+        return "save";
+    }
+
+    foCart.addFlightOffer(flightOffer);
     foRepo.saveFOCart(foCart);
-    model.addAttribute("name", name);
+    numberOfFO = foCart.getFOList().size();
+
+    model.addAttribute("saved", true);
+    model.addAttribute("name", upperName);
+    model.addAttribute("numberOfFO", numberOfFO);
 
     return "save";
     }

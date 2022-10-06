@@ -46,6 +46,7 @@ public class DatabaseRestController {
         for (FlightOffer fo : foCart.getFOList()) {
             dataArray.add(fo.toJson());
         }
+        
         JsonObject payload = Json.createObjectBuilder()
                 .add("data", dataArray.build())
                 .build();
@@ -53,4 +54,6 @@ public class DatabaseRestController {
         return ResponseEntity.ok(payload.toString());
 
     }
+
+    // implement rest for number of users 
 }

@@ -8,6 +8,9 @@
     <title>Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <style>
+
+    </style>
 </head>
 
 
@@ -15,7 +18,7 @@
     <div class="container-sm">
         <div class="d-flex justify-content-md-center align-items-center vh-100">
             <div class="col-md-6">
-                <p class="display-1 text-center">Route Price Tracker</p>
+                <p class="display-1 text-center">Airfare Watcher</p>
                 <form method="POST" action="/search" class="needs-validation" novalidate>
                     <input class="form-control" id="name" type="text" name="name"
                         placeholder="Please identify yourself..." required>
@@ -25,13 +28,6 @@
                     <div class="d-grid mx-auto">
                         <button type="submit" class="btn btn-dark mt-3">Begin</button>
                     </div>
-                </form>
-                <form method="POST" action="/trackedRoutes">
-                    <input class="form-control" id="name" type="text" name="name"
-                        placeholder="Please identify yourself..." required>
-                        <div class="d-grid mx-auto">
-                            <button type="submit" class="btn btn-dark mt-3">Save routes</button>
-                        </div>
                 </form>
             </div>
         </div>
