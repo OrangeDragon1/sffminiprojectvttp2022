@@ -53,7 +53,6 @@ public class SaveController {
     Boolean exist = false;
     Integer numberOfFO = foCart.getFOList().size();
 
-
     // prevent duplication
     List<FlightOffer> foList = foCart.getFOList();
     for (int i = 0; i < foList.size(); i++) {

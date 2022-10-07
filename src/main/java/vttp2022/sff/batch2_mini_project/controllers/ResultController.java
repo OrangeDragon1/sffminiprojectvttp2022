@@ -58,10 +58,18 @@ public class ResultController {
                 form.getFirst("travelClass"),
                 nonStopBoolean, form.getFirst("currencyCode"));
 
+        Integer numberOfFO = 0;
+        Optional<FlightOfferCart> opt = foRepo.getFOCart(upperName);
+
+        // get cart size
+        if (!opt.isEmpty()) {
+            numberOfFO = opt.get().getFOList().size();
+        }
+
         if (foList.isEmpty()) {
-            
+
             model.addAttribute("name", upperName);
-            model.addAttribute("numberOfFO", 0);
+            model.addAttribute("numberOfFO", numberOfFO);
             model.addAttribute("empty", true);
 
             return "result";
@@ -72,14 +80,6 @@ public class ResultController {
                 .filter(a -> a.getIata().equals(form.getFirst("destinationLocationCode")))
                 .findFirst();
         Airport airport = foundAirport.get();
-
-        Integer numberOfFO = 0;
-        Optional<FlightOfferCart> opt = foRepo.getFOCart(upperName);
-
-        // get cart size
-        if (!opt.isEmpty()) {
-            numberOfFO = opt.get().getFOList().size();
-        }
 
         // cheapest flight information to be saved
         FlightOffer firstOffer = foList.get(0);
