@@ -19,6 +19,9 @@ public class Dictionaries {
         this.carriers = carriers;
     }
     
+    public Dictionaries() {
+    }
+
     public Dictionaries(JsonObject aircraft, JsonObject carriers) {
         this.aircraft = aircraft;
         this.carriers = carriers;

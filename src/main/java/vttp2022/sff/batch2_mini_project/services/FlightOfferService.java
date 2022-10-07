@@ -163,7 +163,12 @@ public class FlightOfferService {
         JsonReader jsonReader = Json.createReader(stringReader);
         JsonObject payloadObject = jsonReader.readObject();
         JsonObject dictionariesObject = payloadObject.getJsonObject("dictionaries");
-        Dictionaries dictionaries = new Dictionaries(dictionariesObject.getJsonObject("aircraft"), dictionariesObject.getJsonObject("carriers"));
+        Dictionaries dictionaries = new Dictionaries();
+        try {
+            dictionaries = new Dictionaries(dictionariesObject.getJsonObject("aircraft"), dictionariesObject.getJsonObject("carriers"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         return dictionaries; 
     }
