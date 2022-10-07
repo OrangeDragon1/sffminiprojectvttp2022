@@ -56,52 +56,104 @@ public class FlightOffer {
     public Boolean getDirect() { return direct; }
     public void setDirect(Boolean direct) { this.direct = direct; }
 
-    public static FlightOffer createFlightOffer(JsonObject jsonObject) {
+    public static FlightOffer createFlightOffer(JsonObject jsonObject, Dictionaries d) {
 
-        FlightOffer i = new FlightOffer();
-        i.setTotalPrice(jsonObject.getJsonObject("price").getString("total"));
-        i.setBasePrice(jsonObject.getJsonObject("price").getString("base"));
-        i.setCurrency(jsonObject.getJsonObject("price").getString("currency"));
-        i.setSurcharges(Double.parseDouble(i.getTotalPrice()) - Double.parseDouble(i.getBasePrice()));
-        i.setCount("number" + counter);
+        FlightOffer f = new FlightOffer();
+        f.setTotalPrice(jsonObject.getJsonObject("price").getString("total"));
+        f.setBasePrice(jsonObject.getJsonObject("price").getString("base"));
+        f.setCurrency(jsonObject.getJsonObject("price").getString("currency"));
+        f.setSurcharges(Double.parseDouble(f.getTotalPrice()) - Double.parseDouble(f.getBasePrice()));
+        f.setCount("number" + counter);
         counter++;
         List<JsonObject> joList = new LinkedList<>();
         List<Itinerary> iList = new LinkedList<>();
         JsonArray jsonArray = jsonObject.getJsonArray("itineraries");
         jsonArray.forEach(jo -> joList.add((JsonObject) jo));
         joList.forEach(j -> iList.add(Itinerary.createItinerary(j)));
-        i.setItineraryList(iList);
+        f.setItineraryList(iList);
         JsonArray fareDetailsBySegmentsArray = jsonObject.getJsonArray("travelerPricings").getJsonObject(0).getJsonArray("fareDetailsBySegment");
-        setCabinandBaggage(fareDetailsBySegmentsArray, i);
-        i.setOrigin(i.getItineraryList().get(0).getSegmentList().get(0).getDepartureAirport());
-        i.setDestination(i.getItineraryList().get(0).getSegmentList()
-                .get(i.getItineraryList().get(0).getSegmentList().size()-1).getArrivalAirport());
-        i.setOneWay(false);
-        if (i.getItineraryList().size() <= 1) {
-            i.setOneWay(true);
+        setCabinBaggageAircraftOperator(fareDetailsBySegmentsArray, f, d);
+        f.setOrigin(f.getItineraryList().get(0).getSegmentList().get(0).getDepartureAirport());
+        f.setDestination(f.getItineraryList().get(0).getSegmentList()
+                .get(f.getItineraryList().get(0).getSegmentList().size()-1).getArrivalAirport());
+        f.setOneWay(false);
+        if (f.getItineraryList().size() <= 1) {
+            f.setOneWay(true);
         }
-        i.setDepartureDate(i.getItineraryList().get(0).getSegmentList().get(0).getDepartureDT().substring(0, 10));
-        if (i.oneWay == true) {
-            i.setReturnDate(null);
+        f.setDepartureDate(f.getItineraryList().get(0).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+        if (f.oneWay == true) {
+            f.setReturnDate(null);
         } else {
-            i.setReturnDate(i.getItineraryList().get(i.getItineraryList().size()-1).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+            f.setReturnDate(f.getItineraryList().get(f.getItineraryList().size()-1).getSegmentList().get(0).getDepartureDT().substring(0, 10));
         }
-        i.setTravelClass(i.getItineraryList().get(0).getSegmentList().get(0).getCabin());
+        f.setTravelClass(f.getItineraryList().get(0).getSegmentList().get(0).getCabin());
         Boolean b = true;
-        for (Itinerary itinerary : i.getItineraryList()) {
+        for (Itinerary itinerary : f.getItineraryList()) {
             b = b && itinerary.getDirect();
         }
         if (b == true) {
-            i.setDirect(true);
+            f.setDirect(true);
         } else {
-            i.setDirect(false);
+            f.setDirect(false);
         }
-        if (i.oneWay == true) {
-            i.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", i.getOrigin(), i.getDestination(), i.getDepartureDate(), i.getTravelClass(), i.getDirect(),i.getCurrency()));
+        if (f.oneWay == true) {
+            f.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", 
+            f.getOrigin(), f.getDestination(), f.getDepartureDate(), f.getTravelClass(), f.getDirect(),f.getCurrency()));
         } else {
-            i.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&returnDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", i.getOrigin(), i.getDestination(), i.getDepartureDate(), i.getReturnDate(),i.getTravelClass(), i.getDirect(),i.getCurrency()));
+            f.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&returnDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", 
+            f.getOrigin(), f.getDestination(), f.getDepartureDate(), f.getReturnDate(), f.getTravelClass(), f.getDirect(),f.getCurrency()));
         }
-        return i;
+        return f;
+    }
+
+    public static FlightOffer createFlightOffer(JsonObject jsonObject) {
+
+        FlightOffer f = new FlightOffer();
+        f.setTotalPrice(jsonObject.getJsonObject("price").getString("total"));
+        f.setBasePrice(jsonObject.getJsonObject("price").getString("base"));
+        f.setCurrency(jsonObject.getJsonObject("price").getString("currency"));
+        f.setSurcharges(Double.parseDouble(f.getTotalPrice()) - Double.parseDouble(f.getBasePrice()));
+        f.setCount("number" + counter);
+        counter++;
+        List<JsonObject> joList = new LinkedList<>();
+        List<Itinerary> iList = new LinkedList<>();
+        JsonArray jsonArray = jsonObject.getJsonArray("itineraries");
+        jsonArray.forEach(jo -> joList.add((JsonObject) jo));
+        joList.forEach(j -> iList.add(Itinerary.createItinerary(j)));
+        f.setItineraryList(iList);
+        JsonArray fareDetailsBySegmentsArray = jsonObject.getJsonArray("travelerPricings").getJsonObject(0).getJsonArray("fareDetailsBySegment");
+        setCabinBaggage(fareDetailsBySegmentsArray, f);
+        f.setOrigin(f.getItineraryList().get(0).getSegmentList().get(0).getDepartureAirport());
+        f.setDestination(f.getItineraryList().get(0).getSegmentList()
+                .get(f.getItineraryList().get(0).getSegmentList().size()-1).getArrivalAirport());
+        f.setOneWay(false);
+        if (f.getItineraryList().size() <= 1) {
+            f.setOneWay(true);
+        }
+        f.setDepartureDate(f.getItineraryList().get(0).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+        if (f.oneWay == true) {
+            f.setReturnDate(null);
+        } else {
+            f.setReturnDate(f.getItineraryList().get(f.getItineraryList().size()-1).getSegmentList().get(0).getDepartureDT().substring(0, 10));
+        }
+        f.setTravelClass(f.getItineraryList().get(0).getSegmentList().get(0).getCabin());
+        Boolean b = true;
+        for (Itinerary itinerary : f.getItineraryList()) {
+            b = b && itinerary.getDirect();
+        }
+        if (b == true) {
+            f.setDirect(true);
+        } else {
+            f.setDirect(false);
+        }
+        if (f.oneWay == true) {
+            f.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", 
+            f.getOrigin(), f.getDestination(), f.getDepartureDate(), f.getTravelClass(), f.getDirect(),f.getCurrency()));
+        } else {
+            f.setMeta(String.format("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=%s&destinationLocationCode=%s&departureDate=%s&returnDate=%s&adults=1&travelClass=%s&nonStop=%b&currencyCode=%s", 
+            f.getOrigin(), f.getDestination(), f.getDepartureDate(), f.getReturnDate(), f.getTravelClass(), f.getDirect(),f.getCurrency()));
+        }
+        return f;
     }
 
     public JsonObject toJson() {
@@ -159,24 +211,50 @@ public class FlightOffer {
                 .build();
     }
 
-
-    private static void setCabinandBaggage(JsonArray fareDetailsBySegmentsArray, FlightOffer i) {
+    private static void setCabinBaggageAircraftOperator(JsonArray fareDetailsBySegmentsArray, FlightOffer f, Dictionaries d) {
         for (int j = 0; j < fareDetailsBySegmentsArray.size(); j++) {
-            for (int k = 0; k < i.getItineraryList().size(); k++) {
-                for (int n = 0; n < i.getItineraryList().get(k).getSegmentList().size(); n++) {
+            for (int k = 0; k < f.getItineraryList().size(); k++) {
+                for (int n = 0; n < f.getItineraryList().get(k).getSegmentList().size(); n++) {
                     String segmentId = fareDetailsBySegmentsArray.getJsonObject(j).getString("segmentId");
-                    String id = i.getItineraryList().get(k).getSegmentList().get(n).getId();
+                    String id = f.getItineraryList().get(k).getSegmentList().get(n).getId();
+                    String segmentAircraftCode = f.getItineraryList().get(k).getSegmentList().get(n).getAircraftCode();
+                    String segmentOperatorCode = f.getItineraryList().get(k).getSegmentList().get(n).getOperatorCode();
                     if (segmentId.equals(id)) {
                         String cabinString = fareDetailsBySegmentsArray.getJsonObject(j).getString("cabin");
-                        i.getItineraryList().get(k).getSegmentList().get(n).setCabin(cabinString);
-
+                        f.getItineraryList().get(k).getSegmentList().get(n).setCabin(cabinString);
+                        f.getItineraryList().get(k).getSegmentList().get(n).setAircraft(d.getAircraft().getString(segmentAircraftCode));
+                        f.getItineraryList().get(k).getSegmentList().get(n).setOperator(d.getCarriers().getString(segmentOperatorCode));
                         JsonObject checkedBagsObject = fareDetailsBySegmentsArray.getJsonObject(j).getJsonObject("includedCheckedBags");
                         if (checkedBagsObject.containsKey("quantity")) {
                             String checkedBagString = String.valueOf(checkedBagsObject.getInt("quantity"));
-                            i.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " CHECKED BAGGAGE ALLOWED");
+                            f.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " CHECKED BAGGAGE ALLOWED");
                         } else if (checkedBagsObject.containsKey("weight")) {
                             String checkedBagString = checkedBagsObject.getInt("weight") + " " + checkedBagsObject.getString("weightUnit");
-                            i.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " OF BAGGAGE ALLOWED");
+                            f.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " OF BAGGAGE ALLOWED");
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void setCabinBaggage(JsonArray fareDetailsBySegmentsArray, FlightOffer f) {
+        for (int j = 0; j < fareDetailsBySegmentsArray.size(); j++) {
+            for (int k = 0; k < f.getItineraryList().size(); k++) {
+                for (int n = 0; n < f.getItineraryList().get(k).getSegmentList().size(); n++) {
+                    String segmentId = fareDetailsBySegmentsArray.getJsonObject(j).getString("segmentId");
+                    String id = f.getItineraryList().get(k).getSegmentList().get(n).getId();
+                    if (segmentId.equals(id)) {
+                        String cabinString = fareDetailsBySegmentsArray.getJsonObject(j).getString("cabin");
+                        f.getItineraryList().get(k).getSegmentList().get(n).setCabin(cabinString);
+                        JsonObject checkedBagsObject = fareDetailsBySegmentsArray.getJsonObject(j).getJsonObject("includedCheckedBags");
+                        if (checkedBagsObject.containsKey("quantity")) {
+                            String checkedBagString = String.valueOf(checkedBagsObject.getInt("quantity"));
+                            f.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " CHECKED BAGGAGE ALLOWED");
+                        } else if (checkedBagsObject.containsKey("weight")) {
+                            String checkedBagString = checkedBagsObject.getInt("weight") + " " + checkedBagsObject.getString("weightUnit");
+                            f.getItineraryList().get(k).getSegmentList().get(n).setIncludedCheckedBags(checkedBagString + " OF BAGGAGE ALLOWED");
                         }
                         break;
                     }

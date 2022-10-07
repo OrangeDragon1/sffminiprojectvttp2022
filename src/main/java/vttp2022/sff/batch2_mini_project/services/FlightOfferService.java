@@ -27,6 +27,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import vttp2022.sff.batch2_mini_project.models.Dictionaries;
 import vttp2022.sff.batch2_mini_project.models.FlightOffer;
 
 @Service
@@ -84,9 +85,11 @@ public class FlightOfferService {
         }
 
         List<JsonObject> joList = getAvailableFlightOffer(payload);
+        Dictionaries dictionaries = getDictionaries(payload);
+
         List<FlightOffer> fList = new LinkedList<>();
         for (JsonObject jo : joList) {
-            fList.add(FlightOffer.createFlightOffer(jo));
+            fList.add(FlightOffer.createFlightOffer(jo, dictionaries));
         }
         return fList;
     }
@@ -140,7 +143,7 @@ public class FlightOfferService {
         return "Bearer " + oAuthResponse.getAccessToken();
     }
 
-    // method to get payloadObject
+    // method to get dataObject
     private List<JsonObject> getAvailableFlightOffer(String payload) {
 
         Reader stringReader = new StringReader(payload);
@@ -151,5 +154,17 @@ public class FlightOfferService {
         dataArray.forEach(jo -> joList.add((JsonObject) jo));
 
         return joList;
+    }
+
+    // method to get dictionary object
+    private Dictionaries getDictionaries(String payload) {
+
+        Reader stringReader = new StringReader(payload);
+        JsonReader jsonReader = Json.createReader(stringReader);
+        JsonObject payloadObject = jsonReader.readObject();
+        JsonObject dictionariesObject = payloadObject.getJsonObject("dictionaries");
+        Dictionaries dictionaries = new Dictionaries(dictionariesObject.getJsonObject("aircraft"), dictionariesObject.getJsonObject("carriers"));
+        
+        return dictionaries; 
     }
 }

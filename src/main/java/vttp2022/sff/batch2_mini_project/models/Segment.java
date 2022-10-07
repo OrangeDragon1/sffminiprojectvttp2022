@@ -13,7 +13,9 @@ public class Segment {
     private String arrivalDT;
     private String flightNumber;
     private String operatorCode;
+    private String operator;
     private String aircraftCode;
+    private String aircraft;
     private String duration;
     private String cabin;
     private String includedCheckedBags;
@@ -55,9 +57,12 @@ public class Segment {
     public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
     public String getFlightTime() { return flightTime; }
     public void setFlightTime(String flightTime) { this.flightTime = flightTime; }
-
-    public static Segment createSegment(JsonObject jo) {
-        Segment f = new Segment();
+    public String getOperator() { return operator; }
+    public void setOperator(String operator) { this.operator = operator; }
+    public String getAircraft() { return aircraft; }
+    public void setAircraft(String aircraft) { this.aircraft = aircraft; }
+    
+    public static Segment createSegment(JsonObject jo) { Segment f = new Segment();
         try {
                 f.setId(jo.getString("id")); 
                 f.setDepartureAirport(jo.getJsonObject("departure").getString("iataCode"));

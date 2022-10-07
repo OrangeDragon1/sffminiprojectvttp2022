@@ -16,57 +16,115 @@
     <nav class="navbar fixed-top navbar-expand-lg bg-light">
         <div class="container mt-1">
             <a class="navbar-brand" href="/">Airfare Watcher</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto"></ul>
                 <span class="nav-item dropdown">
                     <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown">
-                        Logged in as: <strong><span th:text="${name}"></span></strong>
+                        Logged in as:
+                        <strong>
+                            <span th:text="${name}"></span>
+                        </strong>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             <span th:text="${numberOfFO}"></span>
                             <span class="visually-hidden">IN CART</span>
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" style="--bs-dropdown-link-active-bg: #212529;">
-                        <li><a class="dropdown-item">
+                        <li>
+                            <a class="dropdown-item">
                                 <form method="POST" action="/search" id="search">
                                     <input type="hidden" name="name" data-th-value="${name}">
-                                    <button class="dropdown-item" type="submit"
-                                        style="padding: 0!important;">Search</button>
+                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Search</button>
                                 </form>
-                            </a></li>
-                        <li><a class="dropdown-item">
-                                <form method="POST" action="/trackedRoutes">
-                                    <input type="hidden" name="name" data-th-value="${name}">
-                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Tracked
-                                        Flights</button>
-                                </form>
-                            </a></li>
-                        <li>
-                            <hr class="dropdown-divider">
+                            </a>
                         </li>
                         <li>
                             <a class="dropdown-item">
-                                <form method="POST" action="/deleteUser">
+                                <form method="POST" action="/trackedRoutes">
                                     <input type="hidden" name="name" data-th-value="${name}">
-                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Delete
-                                        User</button>
+                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">
+                                        Tracked
+                                    Flights
+                                    </button>
                                 </form>
                             </a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="/">Logout</a></li>
+                        <li>
+                            <a class="dropdown-item">
+                                <button
+                                    type="button"
+                                    class="dropdown-item"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteUser"
+                                    style="padding: 0!important;"
+                                >
+                                    Delete
+                                        User
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/">Logout</a>
+                        </li>
                     </ul>
                 </span>
             </div>
         </div>
     </nav>
+    <!-- Modal for Delete User -->
+    <div
+        class="modal fade"
+        id="deleteUser"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete user confirmation</h1>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want delete <span th:text="${name}"></span> from the system?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form method="POST" action="/deleteUser" style="display: inline-block;">
+                        <!-- delete button -->
+                        <input type="hidden" name="name" data-th-value="${name}">
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <span th:if="${saved}">
         <div class="container-sm">
