@@ -50,6 +50,7 @@ public class ResultController {
             nonStopBoolean = false;
         }
 
+        System.out.println(form.getFirst("originLocationCode"));
         List<FlightOffer> foList = foSvc.getFlightOffers(form.getFirst("originLocationCode"),
                 form.getFirst("destinationLocationCode"),
                 form.getFirst("departureDate"),
@@ -77,7 +78,7 @@ public class ResultController {
 
         List<Airport> airportList = getAirportList();
         Optional<Airport> foundAirport = airportList.stream()
-                .filter(a -> a.getIata().equals(form.getFirst("destinationLocationCode")))
+                .filter(a -> a.getIataCode().equals(form.getFirst("destinationLocationCode").toUpperCase()))
                 .findFirst();
         Airport airport = foundAirport.get();
 
@@ -85,7 +86,7 @@ public class ResultController {
         FlightOffer firstOffer = foList.get(0);
 
         // will not return null because search page requires input
-        model.addAttribute("destination", airport.getCity());
+        model.addAttribute("destination", airport.getMunicipality() + ", " + airport.getCountry());
         model.addAttribute("foList", foList);
         model.addAttribute("firstOffer", firstOffer.toJson().toString());
         model.addAttribute("name", upperName);
@@ -100,12 +101,33 @@ public class ResultController {
         String row;
         List<Airport> airportList = new LinkedList<>();
 
-        try (BufferedReader csvReader = new BufferedReader(new FileReader("src/main/resources/static/airports.csv"))) {
+        try (BufferedReader csvReader = new BufferedReader(new FileReader("src/main/resources/static/airportsInfo.csv"))) {
             // read firstline, get rid of header
             csvReader.readLine();
             while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                airportList.add(new Airport(data[0], data[1], data[2], data[3], data[5]));
+                String[] data = row.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                airportList.add(new Airport(
+                    data[3].replaceAll("^\"|\"$", ""), 
+                    data[4].replaceAll("^\"|\"$", ""), 
+                    data[5].replaceAll("^\"|\"$", ""), 
+                    data[7].replaceAll("^\"|\"$", ""), 
+                    data[8].replaceAll("^\"|\"$", "")));
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader csvReader = new BufferedReader(new FileReader("src/main/resources/static/countriesInfo.csv"))) {
+            // read firstline, get rid of header
+            csvReader.readLine();
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                for (Airport a : airportList) {
+                    if (a.getIsoCountry().equals(data[1].replaceAll("^\"|\"$", ""))) {
+                        a.setCountry(data[2].replaceAll("^\"|\"$", ""));
+                    }
+                }
             }
             csvReader.close();
         } catch (IOException e) {

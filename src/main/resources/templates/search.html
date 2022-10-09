@@ -1,208 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+            crossorigin="anonymous"
+        >
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            $(function() {
+                $("#OriginAirportName").autocomplete({
+                    source: "search/airportNamesAutoComplete",
+                    minLength: 1,
+                    select: function(event, ui) {
+                        this.value = ui.item.label;
+                        $("input[type=hidden][name=originLocationCode]").val(ui.item.value);
+                        return false;
+                    }
+                })
+                .autocomplete("instance")._renderItem = function (ul,item) {
+                    return $( "<li>")
+                        .append("<div>" + item.label + "<br>" + "<strong>" + item.desc + "</strong>" + "</div>")
+                        .appendTo(ul);
+                }
+            });
+            $(function() {
+                $("#DestinationAirportName").autocomplete({
+                    source: "search/airportNamesAutoComplete",
+                    minLength: 1,
+                    select: function(event, ui) {
+                        this.value = ui.item.label;
+                        $("input[type=hidden][name=destinationLocationCode]").val(ui.item.value);
+                        return false;
+                    }
+                })
+                .autocomplete("instance")._renderItem = function (ul,item) {
+                    return $( "<li>")
+                        .append("<div>" + item.label + "<br>" + "<strong>" + item.desc + "</strong>" + "</div>")
+                        .appendTo(ul);
+                }
+            });
+        </script>
+        <style>
         .form-check-input:checked {
             background-color: #212529;
             border-color: #212529;
         }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar fixed-top navbar-expand-lg bg-light">
-        <div class="container mt-1">
-            <a class="navbar-brand" href="/">Airfare Watcher</a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto"></ul>
-                <span class="nav-item dropdown">
-                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown">
-                        Logged in as:
-                        <strong>
-                            <span th:text="${name}"></span>
-                        </strong>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            <span th:text="${numberOfFO}"></span>
-                            <span class="visually-hidden">IN CART</span>
-                        </span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="--bs-dropdown-link-active-bg: #212529;">
-                        <li>
-                            <a class="dropdown-item">
-                                <form method="POST" action="/search" id="search">
-                                    <input type="hidden" name="name" data-th-value="${name}">
-                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">Search</button>
-                                </form>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">
-                                <form method="POST" action="/trackedRoutes">
-                                    <input type="hidden" name="name" data-th-value="${name}">
-                                    <button class="dropdown-item" type="submit" style="padding: 0!important;">
-                                        Tracked
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: hidden;
+            overflow-x: hidden;
+        }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar fixed-top navbar-expand-lg bg-light">
+            <div class="container mt-1">
+                <a class="navbar-brand" href="/">Airfare Watcher</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto"></ul>
+                    <span class="nav-item dropdown">
+                        <button class="btn btn-outline-dark" type="button" data-bs-toggle="dropdown">
+                            Logged in as:
+                            <strong>
+                                <span th:text="${name}"></span>
+                            </strong>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span th:text="${numberOfFO}"></span>
+                                <span class="visually-hidden">IN CART</span>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="--bs-dropdown-link-active-bg: #212529;">
+                            <li>
+                                <a class="dropdown-item">
+                                    <form method="POST" action="/search" id="search">
+                                        <input type="hidden" name="name" data-th-value="${name}">
+                                        <button class="dropdown-item" type="submit" style="padding: 0!important;">Search</button>
+                                    </form>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item">
+                                    <form method="POST" action="/trackedRoutes">
+                                        <input type="hidden" name="name" data-th-value="${name}">
+                                        <button class="dropdown-item" type="submit" style="padding: 0!important;">
+                                            Tracked
                                     Flights
-                                    </button>
-                                </form>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item">
-                                <button
-                                    type="button"
-                                    class="dropdown-item"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteUser"
-                                    style="padding: 0!important;"
-                                >
-                                    Delete
+                                        </button>
+                                    </form>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item">
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteUser"
+                                        style="padding: 0!important;"
+                                    >
+                                        Delete
                                         User
-                                </button>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/">Logout</a>
-                        </li>
-                    </ul>
-                </span>
+                                    </button>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/">Logout</a>
+                            </li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </nav>
+        <!-- Modal for Delete User -->
+        <div
+            class="modal fade"
+            id="deleteUser"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete user confirmation</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want delete
+                        <span th:text="${name}"></span>
+                        from the system?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form method="POST" action="/deleteUser" style="display: inline-block;">
+                            <!-- delete button -->
+                            <input type="hidden" name="name" data-th-value="${name}">
+                            <button type="submit" class="btn btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-    <!-- Modal for Delete User -->
-    <div
-        class="modal fade"
-        id="deleteUser"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Delete user confirmation</h1>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want delete <span th:text="${name}"></span> from the system?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form method="POST" action="/deleteUser" style="display: inline-block;">
-                        <!-- delete button -->
+        <div class="container-md">
+            <div class="d-flex justify-content-md-center align-items-center vh-100">
+                <div class="col-md-8">
+                    <p class="display-1 text-center">Start searching here!</p>
+                    <form
+                        method="GET"
+                        action="/result"
+                        class="needs-validation"
+                        id="searchForm"
+                        novalidate
+                    >
+                        <div class="row">
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text" id="origin">Origin</span>
+                                <input
+                                    type="text"
+                                    id="OriginAirportName"
+                                    class="form-control"
+                                    placeholder="Please select a departure airport"
+                                    name="OriginAirportName"
+                                    autocomplete="off"
+                                    minlength="3"
+                                    required
+                                >
+                                
+                            </div>
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text" id="destination">Destination</span>
+                                <input
+                                    type="text"
+                                    id="DestinationAirportName"
+                                    class="form-control"
+                                    placeholder="Please select an arrival airport"
+                                    name="DestinationAirportName"
+                                    autocomplete="off"
+                                    minlength="3"
+                                    required
+                                >
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text" id="departureDate">Departure Date</span>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="departureDate"
+                                    data-th-min="${dateNow}"
+                                    data-th-max="${dateLater}"
+                                    required
+                                >
+                            </div>
+                            <div class="input-group mb-3 col">
+                                <span class="input-group-text" id="returnDate">Return Date</span>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="returnDate"
+                                    data-th-min="${dateNow}"
+                                    data-th-max="${dateLater}"
+                                >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <select
+                                    class="form-select input-group mb-3"
+                                    name="travelClass"
+                                    id="travelClass"
+                                    required
+                                >
+                                    <option value="">Please select cabin class...</option>
+                                    <option value="ECONOMY">Economy</option>
+                                    <option value="PREMIUM_ECONOMY">Premium Economy</option>
+                                    <option value="BUSINESS">Business</option>
+                                    <option value="FIRST">First</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select
+                                    class="form-select input-group mb-3"
+                                    name="currencyCode"
+                                    id="currencyCode"
+                                    required
+                                >
+                                    <option value="">Please select currency...</option>
+                                    <option value="SGD">SGD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id=""
+                                name="nonStop"
+                            >
+                            Direct
+                        flights only
+                        </div>
                         <input type="hidden" name="name" data-th-value="${name}">
-                        <button type="submit" class="btn btn-danger">
-                            Delete
-                        </button>
+                        <div class="d-grid mx-auto">
+                            <button type="submit" class="btn btn-dark mt-1">Search</button>
+                        </div>
+                        <input type="hidden" id="OriginAirportID" name="originLocationCode">
+                        <input type="hidden" id="DestinationAirportID" name="destinationLocationCode">
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container-md">
-        <div class="d-flex justify-content-md-center align-items-center vh-100">
-            <div class="col-md-8">
-                <p class="display-1 text-center">Start searching here!</p>
-                <form method="GET" action="/result" class="needs-validation" id="searchForm" novalidate>
-                    <div class="row">
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text" id="origin">Origin</span>
-                            <input class="form-control" placeholder="Please select a departure airport"
-                                name="originLocationCode" list="aList" autocomplete="off" minlength="3" required>
-                        </div>
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text" id="destination">Destination</span>
-                            <input type="text" class="form-control" placeholder="Please select an arrival airport"
-                                name="destinationLocationCode" list="aList" autocomplete="off" minlength="3" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text" id="departureDate">Departure Date</span>
-                            <input type="date" class="form-control" name="departureDate" data-th-min="${dateNow}"
-                                data-th-max="${dateLater}" required>
-                        </div>
-                        <div class="input-group mb-3 col">
-                            <span class="input-group-text" id="returnDate">Return Date</span>
-                            <input type="date" class="form-control" name="returnDate" data-th-min="${dateNow}"
-                                data-th-max="${dateLater}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <select class="form-select input-group mb-3" name="travelClass" id="travelClass" required>
-                                <option value="">Please select cabin class...</option>
-                                <option value="ECONOMY">Economy</option>
-                                <option value="PREMIUM_ECONOMY">Premium Economy</option>
-                                <option value="BUSINESS">Business</option>
-                                <option value="FIRST">First</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select class="form-select input-group mb-3" name="currencyCode" id="currencyCode" required>
-                                <option value="">Please select currency...</option>
-                                <option value="SGD">SGD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="USD">USD</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" role="switch" id="" name="nonStop"> Direct
-                        flights only
-                    </div>
-                    <input type="hidden" name="name" data-th-value="${name}">
-                    <div class="d-grid mx-auto">
-                        <button type="submit" class="btn btn-dark mt-1">Search</button>
-                    </div>
-                    <datalist id="aList">
-                        <span th:each="airport:${airportList}">
-                            <option th:value="${airport.iata}">
-                                <span th:text="${airport.city}+','"></span>
-                                <span th:text="${airport.name}+','"></span>
-                                <span th:text="${airport.icao}"></span>
-                            </option>
-                        </span>
-                    </datalist>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
-        crossorigin="anonymous"></script>
-    <script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+        <script>
         (() => {
             'use strict'
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -218,7 +306,6 @@
                 }, false)
             })
         })()
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>
