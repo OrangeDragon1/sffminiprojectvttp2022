@@ -121,19 +121,26 @@ public class TrackedRoutesController {
         List<FlightOffer> foList = foCart.getFOList();
         // Grab from api using meta data
         // get index 0 because cheapest is at top of the array
+        System.out.println("reached here");
+        List<FlightOffer> newFOList = foSvc.getFlightOffers(meta);
+        
 
-        FlightOffer newFO = foSvc.getFlightOffers(meta).get(0);
-
-        if (newFO == null) {
+        if (newFOList.isEmpty()) {
             // if empty just delete since flight date is past current date
             for (int i = 0; i < foList.size(); i++) {
                 if (foList.get(i).getMeta().equalsIgnoreCase(meta)) {
                     foList.remove(foList.get(i));
                 }
             }
+
+            if (foList.isEmpty()) {
+                return new ModelAndView("redirect:/deleteUser");
+            }
+
             return new ModelAndView("redirect:/trackedRoutes");
         }
 
+        FlightOffer newFO = foSvc.getFlightOffers(meta).get(0);
         for (int i = 0; i < foList.size(); i++) {
             if (foList.get(i).getMeta().equalsIgnoreCase(meta)) {
                 foList.remove(foList.get(i));
