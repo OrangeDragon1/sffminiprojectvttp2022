@@ -20,6 +20,7 @@ import vttp2022.sff.batch2_mini_project.models.FlightOffer;
 import vttp2022.sff.batch2_mini_project.models.FlightOfferCart;
 import vttp2022.sff.batch2_mini_project.repositories.FlightOfferRepository;
 import vttp2022.sff.batch2_mini_project.services.FlightOfferService;
+import vttp2022.sff.batch2_mini_project.services.ImageService;
 
 @Controller
 @RequestMapping(path = "/result")
@@ -30,6 +31,9 @@ public class ResultController {
 
     @Autowired
     private FlightOfferService foSvc;
+
+    @Autowired
+    private ImageService imageSvc;
 
     @GetMapping
     public String getFlightOffer(
@@ -50,7 +54,6 @@ public class ResultController {
             nonStopBoolean = false;
         }
 
-        System.out.println(form.getFirst("originLocationCode"));
         List<FlightOffer> foList = foSvc.getFlightOffers(form.getFirst("originLocationCode"),
                 form.getFirst("destinationLocationCode"),
                 form.getFirst("departureDate"),
@@ -84,9 +87,19 @@ public class ResultController {
 
         // cheapest flight information to be saved
         FlightOffer firstOffer = foList.get(0);
+    
+        // get image 
+        Optional<String> optImage = imageSvc.getImage(airport.getMunicipality());
+        String imageUrl = "";
+
+        if (!optImage.isEmpty()) {
+            imageUrl = optImage.get();
+        }
+    
 
         // will not return null because search page requires input
         model.addAttribute("destination", airport.getMunicipality() + ", " + airport.getCountry());
+        model.addAttribute("imageUrl", imageUrl);
         model.addAttribute("foList", foList);
         model.addAttribute("firstOffer", firstOffer.toJson().toString());
         model.addAttribute("name", upperName);

@@ -121,7 +121,9 @@
                         ></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want delete <span th:text="${name}"></span> from the system?
+                        Are you sure you want delete
+                        <span th:text="${name}"></span>
+                        from the system?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -136,7 +138,6 @@
                 </div>
             </div>
         </div>
-        
         <span th:if="${empty}">
             <div class="container-sm">
                 <div class="d-flex justify-content-md-center align-items-center vh-100">
@@ -165,6 +166,9 @@
             </div>
         </span>
         <span th:unless="${empty}">
+            <div>
+                <img th:src="${imageUrl}" class="img-fluid d-block w-100">
+            </div>
             <div class="container mt-5">
                 <div class="d-flex justify-content-md-center align-items-center mb-1">
                     <h1 class="display-2">

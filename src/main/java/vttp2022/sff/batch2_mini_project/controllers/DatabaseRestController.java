@@ -20,6 +20,7 @@ import jakarta.json.JsonObject;
 import vttp2022.sff.batch2_mini_project.models.FlightOffer;
 import vttp2022.sff.batch2_mini_project.models.FlightOfferCart;
 import vttp2022.sff.batch2_mini_project.repositories.FlightOfferRepository;
+import vttp2022.sff.batch2_mini_project.services.ImageService;
 
 @RestController
 @RequestMapping(path = "/grabUser", produces = MediaType.APPLICATION_JSON_VALUE)
