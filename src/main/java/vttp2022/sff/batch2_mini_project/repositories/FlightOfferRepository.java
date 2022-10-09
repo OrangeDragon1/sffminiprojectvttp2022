@@ -2,9 +2,11 @@ package vttp2022.sff.batch2_mini_project.repositories;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,6 +70,19 @@ public class FlightOfferRepository {
 
         redisTemplate.delete(name);
         return true;
+    }
+
+    public List<String> getAllUsers() {
+        Set<String> redisKeys = redisTemplate.keys("*");
+        List<String> keyList = new LinkedList<>();
+        
+        Iterator<String> iterator = redisKeys.iterator();
+        while (iterator.hasNext()) {
+               String data = iterator.next();
+               keyList.add(data);
+        }
+
+        return keyList;
     }
 
     private List<JsonObject> getAvailableFlightOffer(String payload) {
